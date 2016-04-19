@@ -11,8 +11,6 @@ Lider Ahenk Disk Quota Plug-in
       lider-disk-quota-db/                --> Lider database fragment (for Lider persistence layer)
       lider-disk-quota-feature/           --> feature definition (used to install plugin to Karaf container)
       scripts/                            --> helper scripts (such as automated export, building deb etc.)
-      findbugs/                           --> configuration files for findbugs plugin
-      checkstyle/                         --> configuration files for checkstyle plugin
 
 
 
