@@ -34,7 +34,7 @@ public class DiskQuotaProfileHandler extends AbstractHandler {
 			// profiles can be handled by Lider Console Core.
 			// We also pass our profile dialog implementation as parameter to
 			// allow the editor use it dynamically.
-			page.openEditor(new ProfileEditorInput(Messages.getString("DiskQuota"), DiskQuotaConstants.PLUGIN_NAME, 
+			page.openEditor(new ProfileEditorInput(Messages.getString("DISK_QUOTA"), DiskQuotaConstants.PLUGIN_NAME, 
 					DiskQuotaConstants.PLUGIN_VERSION, new DiskQuotaProfileDialog()), 
 					LiderConstants.EDITORS.PROFILE_EDITOR);
 		} catch (PartInitException e) {

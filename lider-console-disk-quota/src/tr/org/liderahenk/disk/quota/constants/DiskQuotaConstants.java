@@ -10,4 +10,9 @@ public class DiskQuotaConstants {
 	
 	public static final int MIN_VALUE = 0;  //TODO min value??
 	
+	public static final class PARAMETERS {
+		public static final String SOFT_QUOTA = "soft-quota";
+		public static final String HARD_QUOTA = "hard-quota";
+	}
+	
 }
