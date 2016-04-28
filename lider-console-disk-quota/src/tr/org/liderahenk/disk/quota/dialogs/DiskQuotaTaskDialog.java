@@ -1,27 +1,42 @@
 package tr.org.liderahenk.disk.quota.dialogs;
 
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import org.codehaus.jackson.map.ObjectMapper;
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.PlatformUI;
+import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
+import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
 import tr.org.liderahenk.liderconsole.core.dialogs.DefaultTaskDialog;
+import tr.org.liderahenk.liderconsole.core.model.TaskStatus;
+import tr.org.liderahenk.liderconsole.core.widgets.Notifier;
 import tr.org.liderahenk.disk.quota.constants.DiskQuotaConstants;
 import tr.org.liderahenk.disk.quota.i18n.Messages;
 
 /**
  * Task execution dialog for disk-quota plugin.
+ * 
+ * @author <a href="mailto:mine.dogan@agem.com.tr">Mine Dogan</a>
  * 
  */
 public class DiskQuotaTaskDialog extends DefaultTaskDialog {
@@ -32,9 +47,56 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 	private Spinner spinnerSoftQuota;
 	private Spinner spinnerHardQuota;
 	
+	private String softQuota;
+	private String hardQuota;
+	private String usage;
+	
+	private static final Logger logger = LoggerFactory.getLogger(DiskQuotaTaskDialog.class);
+
+	private IEventBroker eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
+	
 	public DiskQuotaTaskDialog(Shell parentShell, Set<String> dnSet) {
 		super(parentShell, dnSet);
+		// TODO improvement. (after XMPPClient fix) Instead of 'TASK' topic use
+		// plugin name as event topic
+		eventBroker.subscribe(LiderConstants.EVENT_TOPICS.TASK, eventHandler);
 	}
+	
+	private EventHandler eventHandler = new EventHandler() {
+		@Override
+		public void handleEvent(final Event event) {
+			Job job = new Job("TASK") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+
+					monitor.beginTask("QUOTA", 100);
+
+					try {
+
+						String body = (String) event.getProperty("org.eclipse.e4.data");
+						TaskStatus taskStatus = new ObjectMapper().readValue(body, TaskStatus.class);
+						Map<String, Object> responseData = taskStatus.getResponseData();
+						
+						softQuota = (String) responseData.get("softQuota");
+						hardQuota = (String) responseData.get("hardQuota");
+						usage = (String) responseData.get("usage");
+						
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						Notifier.error("", Messages.getString("UNEXPECTED_ERROR"));
+					}
+
+					monitor.worked(100);
+					monitor.done();
+
+					return Status.OK_STATUS;
+				}
+			};
+
+			job.setUser(true);
+			job.schedule();
+		}
+	};
 
 	@Override
 	public String createTitle() {
@@ -124,7 +186,14 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 		
 		composite.pack();
 		
-		return null;
+		
+		return composite;
+	}
+	
+	@Override
+	public boolean close() {
+		eventBroker.unsubscribe(eventHandler);
+		return super.close();
 	}
 
 	@Override
@@ -134,7 +203,10 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 
 	@Override
 	public Map<String, Object> getParameterMap() {
-		return null;
+		Map<String, Object> parameterMap = new HashMap<String, Object>();
+		parameterMap.put(DiskQuotaConstants.PARAMETERS.SOFT_QUOTA, spinnerSoftQuota.getText());
+		parameterMap.put(DiskQuotaConstants.PARAMETERS.HARD_QUOTA, spinnerHardQuota.getText());
+		return parameterMap;
 	}
 
 	@Override
