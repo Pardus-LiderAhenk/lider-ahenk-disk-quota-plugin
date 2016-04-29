@@ -1,5 +1,7 @@
 package tr.org.liderahenk.disk.quota.dialogs;
 
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
@@ -15,6 +17,7 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
@@ -29,6 +32,9 @@ import org.slf4j.LoggerFactory;
 import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
 import tr.org.liderahenk.liderconsole.core.dialogs.DefaultTaskDialog;
 import tr.org.liderahenk.liderconsole.core.model.TaskStatus;
+import tr.org.liderahenk.liderconsole.core.rest.enums.RestDNType;
+import tr.org.liderahenk.liderconsole.core.rest.requests.TaskRequest;
+import tr.org.liderahenk.liderconsole.core.rest.utils.TaskUtils;
 import tr.org.liderahenk.liderconsole.core.widgets.Notifier;
 import tr.org.liderahenk.disk.quota.constants.DiskQuotaConstants;
 import tr.org.liderahenk.disk.quota.i18n.Messages;
@@ -51,12 +57,15 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 	private String hardQuota;
 	private String usage;
 	
+	private Set<String> dnSet;
+	
 	private static final Logger logger = LoggerFactory.getLogger(DiskQuotaTaskDialog.class);
 
 	private IEventBroker eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 	
 	public DiskQuotaTaskDialog(Shell parentShell, Set<String> dnSet) {
 		super(parentShell, dnSet);
+		this.dnSet = dnSet;
 		// TODO improvement. (after XMPPClient fix) Instead of 'TASK' topic use
 		// plugin name as event topic
 		eventBroker.subscribe(LiderConstants.EVENT_TOPICS.TASK, eventHandler);
@@ -80,6 +89,9 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 						softQuota = (String) responseData.get("softQuota");
 						hardQuota = (String) responseData.get("hardQuota");
 						usage = (String) responseData.get("usage");
+						
+						Display.getDefault().asyncExec(new QuotaRunnable(softQuota, hardQuota, usage, txtSoftQuota, txtHardQuota, txtDiskUsage));
+						
 						
 					} catch (Exception e) {
 						logger.error(e.getMessage(), e);
@@ -186,6 +198,16 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 		
 		composite.pack();
 		
+		try {
+			TaskRequest task = new TaskRequest(new ArrayList<String>(dnSet), RestDNType.AHENK,
+					getPluginName(), getPluginVersion(), getCommandId(), getParameterMap(), null,
+					new Date());
+			TaskUtils.execute(task);
+		} catch (Exception e) {
+			logger.error(e.getMessage(), e);
+			Notifier.error(null, Messages.getString("ERROR_ON_EXECUTE"));
+		}
+		
 		
 		return composite;
 	}
@@ -222,6 +244,43 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 	@Override
 	public String getPluginVersion() {
 		return DiskQuotaConstants.PLUGIN_VERSION;
+	}
+	
+	class QuotaRunnable implements Runnable {
+
+		private String softQuota;
+		private String hardQuota;
+		private String usage;
+		
+		private Text txtSoftQuota;
+		private Text txtHardQuota;
+		private Text txtDiskUsage;
+		
+		public QuotaRunnable(String softQuota, String hardQuota, String usage, Text txtSoftQuota, Text txtHardQuota, Text txtDiskUsage) {
+			this.softQuota = softQuota;
+			this.hardQuota = hardQuota;
+			this.usage = usage;
+			this.txtSoftQuota = txtSoftQuota;
+			this.txtHardQuota = txtHardQuota;
+			this.txtDiskUsage = txtDiskUsage;
+		}
+		
+		@Override
+		public void run() {
+			if(txtSoftQuota != null && softQuota != null) {
+				txtSoftQuota.setText(softQuota);
+				txtSoftQuota.getParent().layout();
+			}
+			if(txtHardQuota != null && hardQuota != null) {
+				txtHardQuota.setText(hardQuota);
+				txtHardQuota.getParent().layout();
+			}
+			if(txtDiskUsage != null && txtDiskUsage != null) {
+				txtDiskUsage.setText(usage);
+				txtDiskUsage.getParent().layout();
+			}
+		}
+		
 	}
 	
 }
