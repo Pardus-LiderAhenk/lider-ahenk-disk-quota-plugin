@@ -29,8 +29,8 @@
     </feature>
 
     <feature name="lider-disk-quota-bundles" version="${project.version}">
+    	<configfile finalname="/etc/tr.org.liderahenk.disk.quota.cfg">mvn:${groupId}/lider-disk-quota/${project.version}/cfg</configfile>
 		<bundle>mvn:tr.org.liderahenk/lider-disk-quota/${project.version}</bundle>
-		<bundle>mvn:tr.org.liderahenk/lider-disk-quota-db/${project.version}</bundle>
     </feature>
 
     <feature name="lider-disk-quota-dependencies" version="${project.version}">
