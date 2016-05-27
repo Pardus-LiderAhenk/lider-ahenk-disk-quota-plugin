@@ -19,7 +19,6 @@ class ChangeQuota(AbstractCommand):
         self.current_quota = self.get_current_quota(self.current_user)
         # self.soft_quota = '1000'
         # self.hard_quota = '1500'
-        self.install_quota = 'apt-get -y install quota'
         self.change_quota = 'setquota --always-resolve -u ' + self.current_user + ' ' + str(int(self.soft_quota) * 1024) + ' ' + str(int(self.hard_quota) * 1024) + ' 0 0 --all'
 
     def handle_task(self):
@@ -27,8 +26,6 @@ class ChangeQuota(AbstractCommand):
         data = {'softQuota': '222', 'hardQuota': '333', 'usage': '444'}
         #data = {'softQuota': '222'}
         self.create_response(message='_message', data=data)
-        ##process = self.context.execute(self.install_quota)
-        #process.wait()
 
         #process = self.context.execute(self.change_quota)
         #process.wait()
