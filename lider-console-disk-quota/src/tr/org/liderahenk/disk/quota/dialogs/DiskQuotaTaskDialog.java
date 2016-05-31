@@ -67,8 +67,6 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 	public DiskQuotaTaskDialog(Shell parentShell, Set<String> dnSet) {
 		super(parentShell, dnSet);
 		this.dnSet = dnSet;
-		// TODO improvement. (after XMPPClient fix) Instead of 'TASK' topic use
-		// plugin name as event topic
 		eventBroker.subscribe(getPluginName().toUpperCase(Locale.ENGLISH), eventHandler);
 	}
 
@@ -80,9 +78,8 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 				protected IStatus run(IProgressMonitor monitor) {
 					monitor.beginTask("QUOTA", 100);
 					try {
-						String body = (String) event.getProperty("org.eclipse.e4.data");
-						TaskStatusNotification taskStatus = new ObjectMapper().readValue(body,
-								TaskStatusNotification.class);
+						TaskStatusNotification taskStatus = (TaskStatusNotification) event
+								.getProperty("org.eclipse.e4.data");
 						byte[] data = taskStatus.getResult().getResponseData();
 						Map<String, Object> responseData = new ObjectMapper().readValue(data, 0, data.length,
 								new TypeReference<HashMap<String, Object>>() {
