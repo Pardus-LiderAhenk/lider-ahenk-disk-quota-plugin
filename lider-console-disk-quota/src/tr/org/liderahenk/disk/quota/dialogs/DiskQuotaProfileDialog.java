@@ -16,6 +16,7 @@ import org.slf4j.LoggerFactory;
 import tr.org.liderahenk.disk.quota.constants.DiskQuotaConstants;
 import tr.org.liderahenk.disk.quota.i18n.Messages;
 import tr.org.liderahenk.liderconsole.core.dialogs.IProfileDialog;
+import tr.org.liderahenk.liderconsole.core.exceptions.ValidationException;
 import tr.org.liderahenk.liderconsole.core.model.Profile;
 
 /**
@@ -102,6 +103,12 @@ public class DiskQuotaProfileDialog implements IProfileDialog {
 		profileData.put(DiskQuotaConstants.PARAMETERS.SOFT_QUOTA, spinnerSoftQuota.getText());
 		profileData.put(DiskQuotaConstants.PARAMETERS.HARD_QUOTA, spinnerHardQuota.getText());
 		return profileData;
+	}
+
+	@Override
+	public void validateBeforeSave() throws ValidationException {
+		// TODO Auto-generated method stub
+		
 	}
 	
 }

@@ -34,6 +34,7 @@ import org.slf4j.LoggerFactory;
 import tr.org.liderahenk.disk.quota.constants.DiskQuotaConstants;
 import tr.org.liderahenk.disk.quota.i18n.Messages;
 import tr.org.liderahenk.liderconsole.core.dialogs.DefaultTaskDialog;
+import tr.org.liderahenk.liderconsole.core.exceptions.ValidationException;
 import tr.org.liderahenk.liderconsole.core.ldap.enums.DNType;
 import tr.org.liderahenk.liderconsole.core.rest.requests.TaskRequest;
 import tr.org.liderahenk.liderconsole.core.rest.utils.TaskUtils;
@@ -216,8 +217,7 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 	}
 
 	@Override
-	public boolean validateBeforeExecution() {
-		return true;
+	public void validateBeforeExecution() throws ValidationException {
 	}
 
 	@Override
