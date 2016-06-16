@@ -5,6 +5,7 @@
 #
 # Generated files can be found under /tmp/lider-ahenk-disk-quota-plugin/
 ###
+set -e
 
 pushd $(dirname $0) > /dev/null
 PRJ_ROOT_PATH=$(dirname $(pwd -P))
@@ -29,8 +30,8 @@ echo "Export path: $EXPORT_PATH"
 # Copy resulting files
 echo "Copying generated files to $EXPORT_PATH..."
 mkdir -p "$EXPORT_PATH"
-mv -f "$PRJ_ROOT_PATH"/disk-quota*.deb "$EXPORT_PATH"
-mv -f "$PRJ_ROOT_PATH"/disk-quota*.changes "$EXPORT_PATH"
+mv -f "$PRJ_ROOT_PATH"/*.deb "$EXPORT_PATH"
+mv -f "$PRJ_ROOT_PATH"/*.changes "$EXPORT_PATH"
 cp -rf "$PRJ_ROOT_PATH"/lider-disk-quota/target/lider-*.jar "$EXPORT_PATH"
 cp -rf "$PRJ_ROOT_PATH"/lider-console-disk-quota/target/lider-console-*.jar "$EXPORT_PATH"
 echo "Copied generated files."

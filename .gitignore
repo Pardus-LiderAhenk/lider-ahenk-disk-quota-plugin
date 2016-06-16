@@ -8,6 +8,8 @@ target/**
 .settings/**
 workspace/
 workspace/**
+ahenk-disk-quota/debian/ahenk-disk-quota/
+ahenk-disk-quota/debian/ahenk-disk-quota/**
 
 # Byte-compiled / optimized / DLL files
 __pycache__/
@@ -65,9 +67,6 @@ coverage.xml
 
 # Sphinx documentation
 docs/_build/
-
-# PyBuilder
-target/
 
 #Ipython Notebook
 .ipynb_checkpoints
