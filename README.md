@@ -1,45 +1,39 @@
-# lider-ahenk-remote-access-plugin
+# lider-ahenk-disk-quota-plugin
 
-**Lider Ahenk** is an open source project which provides solutions to manage, monitor and audit unlimited number of different systems and users on a network.
+Disk quota plugin for [Lider Ahenk project](http://www.liderahenk.org.tr).
 
-Lider Ahenk remote-access plugin provides a VNC (Virtual Network Computing) client which allow users to connect to Ahenk-installed machines with desktop sharing capabilities.
+|                   | **user-oriented** | **machine-oriented** |
+|:-----------------:|:-----------------:|:--------------------:|
+| **task plugin**   |                   |                      |
+| **policy plugin** |         x         |                      |
 
-This documentation **only** covers plugin related topics. To learn about core projects, please see other lider ahenk projects section.
-
-## Setup Development Environment
+## How to Build
 
 > We use Eclipse for Lider and Lider Console related development. See these documentation [here](https://github.com/Pardus-Kurumsal/lider-console/wiki/01.-Setup-Development-Environment) and [here](https://github.com/Pardus-Kurumsal/lider/wiki/01.-Setup-Development-Environment) to setup Eclipse IDE with Lider and Lider Console projects imported.
 
-1. Clone the plugin project by running `git clone https://github.com/Pardus-Kurumsal/lider-ahenk-remote-access-plugin.git`.
+1. Clone the plugin project by running `git clone https://github.com/Pardus-Kurumsal/lider-ahenk-disk-quota-plugin.git`.
 2. Open Eclipse and import the plugin project into Eclipse as 'Existing Maven Projects'.
+3. Navigate to _lider-ahenk-disk-quota-plugin/scripts_ directory and run `build-plugin.sh`.
 
-## How to Build?
+## How to Run
 
-
-
-## How to Run?
-
-Plugin project consists of three sub-modules (for **Lider**, **Lider Console** and **Ahenk**). Each sub-module is its own plugin that needs to be handled separately. Below is an explanation regarding how to run each sub-module:
+> Make sure you have Lider, Lider Console and Ahenk running. See these documentation:  [\[1\]](https://github.com/Pardus-Kurumsal/lider/wiki/02.-Building-&-Running), [\[2\]](https://github.com/Pardus-Kurumsal/lider-console/wiki/02.-Building-&-Running) and [\[3\]](https://github.com/Pardus-Kurumsal/ahenk/wiki/02.-Running).
 
 #### Lider
 
-> **Prerequisite**: Make sure you have a running Karaf container on which Lider core components installed. See [this documentation](https://github.com/Pardus-Kurumsal/lider/wiki/02.-Building-&-Running) for how to run Lider on Karaf container.
-
-1. Type `feature:repo-add  mvn:${groupId}/lider-${rootArtifactId}-feature/${version}/xml/features` on Karaf shell. This will add plugin repository to the Karaf instance.
-2. Again on Karaf shell, run `feature:install lider-${rootArtifactId}` to install and run plugin bundles.
+1. Type `feature:repo-add  mvn:tr.org.liderahenk/lider-disk-quota-feature/1.0.0/xml/features` on Karaf shell. This will add plugin repository to the Karaf instance.
+2. Again on Karaf shell, run `feature:install lider-disk-quota` to install and run plugin bundles.
 3. Use `log:tail` and `plugin:list` commands to ensure the plugin is installed and working properly.
 
 #### Lider Console
 
-> **Prerequisite**: Make sure you have a running Lider Console application. See [this documentation](https://github.com/Pardus-Kurumsal/lider-console/wiki/02.-Building-&-Running) for how to run Lider Console on Eclipse.
-
-1. Open Eclipse, go to 'Run --> Debug Configurations' menu and on 'Plugins' tab, select _lider-console-remote-access_
+1. Open Eclipse, go to 'Run --> Debug Configurations' menu and on 'Plugins' tab, select _lider-console-disk-quota_
 2. Click 'Add Required Plugins' button to add any plugins the project depend on.
 3. Finally you can run Lider Console as explained in its [documentation](https://github.com/Pardus-Kurumsal/lider-console/wiki/02.-Building-&-Running).
 
 #### Ahenk
 
-**TODO**
+1. Create a soft link for _ahenk-disk-quota/disk-quota_ directory via `sudo ln -s lider-ahenk-disk-quota-plugin/ahenk-disk-quota/disk-quota/ /opt/ahenk/plugins`
 
 ## Contribution
 
