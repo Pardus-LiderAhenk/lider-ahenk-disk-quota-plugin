@@ -37,7 +37,7 @@ import tr.org.liderahenk.liderconsole.core.dialogs.DefaultTaskDialog;
 import tr.org.liderahenk.liderconsole.core.exceptions.ValidationException;
 import tr.org.liderahenk.liderconsole.core.ldap.enums.DNType;
 import tr.org.liderahenk.liderconsole.core.rest.requests.TaskRequest;
-import tr.org.liderahenk.liderconsole.core.rest.utils.TaskUtils;
+import tr.org.liderahenk.liderconsole.core.rest.utils.TaskRestUtils;
 import tr.org.liderahenk.liderconsole.core.widgets.Notifier;
 import tr.org.liderahenk.liderconsole.core.xmpp.notifications.TaskStatusNotification;
 
@@ -201,7 +201,7 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 		try {
 			TaskRequest task = new TaskRequest(new ArrayList<String>(dnSet), DNType.AHENK, getPluginName(),
 					getPluginVersion(), getCommandId(), getParameterMap(), null, new Date());
-			TaskUtils.execute(task);
+			TaskRestUtils.execute(task);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
 			Notifier.error(null, Messages.getString("ERROR_ON_EXECUTE"));
