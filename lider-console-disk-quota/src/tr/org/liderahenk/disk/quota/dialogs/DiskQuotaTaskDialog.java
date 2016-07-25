@@ -3,7 +3,6 @@ package tr.org.liderahenk.disk.quota.dialogs;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
-import java.util.Locale;
 import java.util.Map;
 import java.util.Set;
 
@@ -13,7 +12,6 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.e4.core.services.events.IEventBroker;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
@@ -25,7 +23,6 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Spinner;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
@@ -59,56 +56,12 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 	private String hardQuota;
 	private String usage;
 
-	private Set<String> dnSet;
-
 	private static final Logger logger = LoggerFactory.getLogger(DiskQuotaTaskDialog.class);
-
-	private IEventBroker eventBroker = (IEventBroker) PlatformUI.getWorkbench().getService(IEventBroker.class);
 
 	public DiskQuotaTaskDialog(Shell parentShell, Set<String> dnSet) {
 		super(parentShell, dnSet);
-		this.dnSet = dnSet;
-		eventBroker.subscribe(getPluginName().toUpperCase(Locale.ENGLISH), eventHandler);
+		subscribeEventHandler(taskStatusNotificationHandler);
 	}
-
-	private EventHandler eventHandler = new EventHandler() {
-		@Override
-		public void handleEvent(final Event event) {
-			Job job = new Job("TASK") {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					monitor.beginTask("QUOTA", 100);
-					try {
-						TaskStatusNotification taskStatus = (TaskStatusNotification) event
-								.getProperty("org.eclipse.e4.data");
-						byte[] data = taskStatus.getResult().getResponseData();
-						Map<String, Object> responseData = new ObjectMapper().readValue(data, 0, data.length,
-								new TypeReference<HashMap<String, Object>>() {
-						});
-
-						softQuota = (String) responseData.get("softQuota");
-						hardQuota = (String) responseData.get("hardQuota");
-						usage = (String) responseData.get("usage");
-
-						Display.getDefault().asyncExec(new QuotaRunnable(softQuota, hardQuota, usage, txtSoftQuota,
-								txtHardQuota, txtDiskUsage));
-
-					} catch (Exception e) {
-						logger.error(e.getMessage(), e);
-						Notifier.error("", Messages.getString("UNEXPECTED_ERROR"));
-					}
-
-					monitor.worked(100);
-					monitor.done();
-
-					return Status.OK_STATUS;
-				}
-			};
-
-			job.setUser(true);
-			job.schedule();
-		}
-	};
 
 	@Override
 	public String createTitle() {
@@ -199,7 +152,7 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 		composite.pack();
 
 		try {
-			TaskRequest task = new TaskRequest(new ArrayList<String>(dnSet), DNType.AHENK, getPluginName(),
+			TaskRequest task = new TaskRequest(new ArrayList<String>(getDnSet()), DNType.AHENK, getPluginName(),
 					getPluginVersion(), getCommandId(), getParameterMap(), null, new Date());
 			TaskRestUtils.execute(task);
 		} catch (Exception e) {
@@ -208,12 +161,6 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 		}
 
 		return composite;
-	}
-
-	@Override
-	public boolean close() {
-		eventBroker.unsubscribe(eventHandler);
-		return super.close();
 	}
 
 	@Override
@@ -280,5 +227,44 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 		}
 
 	}
+
+	private EventHandler taskStatusNotificationHandler = new EventHandler() {
+		@Override
+		public void handleEvent(final Event event) {
+			Job job = new Job("TASK") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					monitor.beginTask("QUOTA", 100);
+					try {
+						TaskStatusNotification taskStatus = (TaskStatusNotification) event
+								.getProperty("org.eclipse.e4.data");
+						byte[] data = taskStatus.getResult().getResponseData();
+						Map<String, Object> responseData = new ObjectMapper().readValue(data, 0, data.length,
+								new TypeReference<HashMap<String, Object>>() {
+								});
+
+						softQuota = (String) responseData.get("softQuota");
+						hardQuota = (String) responseData.get("hardQuota");
+						usage = (String) responseData.get("usage");
+
+						Display.getDefault().asyncExec(new QuotaRunnable(softQuota, hardQuota, usage, txtSoftQuota,
+								txtHardQuota, txtDiskUsage));
+
+					} catch (Exception e) {
+						logger.error(e.getMessage(), e);
+						Notifier.error("", Messages.getString("UNEXPECTED_ERROR"));
+					}
+
+					monitor.worked(100);
+					monitor.done();
+
+					return Status.OK_STATUS;
+				}
+			};
+
+			job.setUser(true);
+			job.schedule();
+		}
+	};
 
 }
