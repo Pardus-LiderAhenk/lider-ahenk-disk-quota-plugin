@@ -6,23 +6,22 @@
                  http://www.osgi.org/xmlns/blueprint/v1.0.0 http://www.osgi.org/xmlns/blueprint/v1.0.0/blueprint.xsd
                  http://aries.apache.org/blueprint/xmlns/blueprint-cm/v1.1.0 http://svn.apache.org/repos/asf/aries/trunk/blueprint/blueprint-cm/src/main/resources/org/apache/aries/blueprint/compendium/cm/blueprint-cm-1.1.0.xsd
          ">
-         
+
 	<cm:property-placeholder persistent-id="tr.org.liderahenk.disk.quota"
 		update-strategy="reload">
 	</cm:property-placeholder>
 
 	<!-- ICommand implementation is used to process a task execution -->
 	<service ref="DiskQuotaCommand" interface="tr.org.liderahenk.lider.core.api.plugin.ICommand" />
-	<bean id="DiskQuotaCommand" 
-		class="tr.org.liderahenk.disk.quota.commands.DiskQuotaCommand">
+	<bean id="DiskQuotaCommand" class="tr.org.liderahenk.disk.quota.commands.DiskQuotaCommand">
 		<property name="resultFactory" ref="resultFactory" />
+		<property name="pluginInfo" ref="pluginInfoImpl" />
 	</bean>
 
 	<!-- IPluginInfo implementation is used to register plugin -->
 	<service ref="pluginInfoImpl"
-      	interface="tr.org.liderahenk.lider.core.api.plugin.IPluginInfo" />
-  	<bean id="pluginInfoImpl" 
-		class="tr.org.liderahenk.disk.quota.plugininfo.PluginInfoImpl"
+		interface="tr.org.liderahenk.lider.core.api.plugin.IPluginInfo" />
+	<bean id="pluginInfoImpl" class="tr.org.liderahenk.disk.quota.plugininfo.PluginInfoImpl"
 		init-method="refresh">
 		<property name="pluginName" value="${plugin.name}" />
 		<property name="pluginVersion" value="${plugin.version}" />
