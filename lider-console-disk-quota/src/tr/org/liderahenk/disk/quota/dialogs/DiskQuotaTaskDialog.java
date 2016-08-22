@@ -153,7 +153,7 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 
 		try {
 			TaskRequest task = new TaskRequest(new ArrayList<String>(getDnSet()), DNType.AHENK, getPluginName(),
-					getPluginVersion(), getCommandId(), getParameterMap(), null, new Date());
+					getPluginVersion(), getCommandId(), getParameterMap(), null, null, new Date());
 			TaskRestUtils.execute(task);
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
