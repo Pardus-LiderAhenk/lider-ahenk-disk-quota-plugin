@@ -4,12 +4,13 @@
 import getpass
 import subprocess
 from subprocess import PIPE
-from base.model.enum.ContentType import ContentType
-from base.model.enum.MessageCode import MessageCode
-from base.model.enum.MessageType import MessageType
-from base.plugin.AbstractCommand import AbstractCommand
 
-class ChangeQuota(AbstractCommand):
+
+from base.plugin.abstract_plugin import AbstractPlugin
+
+#TODO WORK ON IT
+
+class ChangeQuota(AbstractPlugin):
     def __init__(self, task, context):
         super(ChangeQuota, self).__init__()
         self.task = task
@@ -58,12 +59,13 @@ class ChangeQuota(AbstractCommand):
 
 
     def create_response(self, message=None, data=None):
-        self.context.put('taskId', self.task.get_id())
-        self.context.put('type', MessageType.TASK_STATUS.value)
-        self.context.put('responseCode', MessageCode.TASK_PROCESSED.value)
-        self.context.put('responseMessage', message)
-        self.context.put('responseData', data)
-        self.context.put('contentType', ContentType.APPLICATION_JSON.value)
+        pass
+        # self.context.put('taskId', self.task.get_id())
+        # self.context.put('type', MessageType.TASK_STATUS.value)
+        # self.context.put('responseCode', MessageCode.TASK_PROCESSED.value)
+        # self.context.put('responseMessage', message)
+        # self.context.put('responseData', data)
+        # self.context.put('contentType', ContentType.APPLICATION_JSON.value)
 
 
 def handle_task(task, context):
