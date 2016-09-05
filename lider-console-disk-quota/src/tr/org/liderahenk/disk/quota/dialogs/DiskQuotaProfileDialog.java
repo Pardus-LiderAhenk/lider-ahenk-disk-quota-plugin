@@ -57,11 +57,14 @@ public class DiskQuotaProfileDialog implements IProfileDialog {
 		lblChangeSoftQuota.setText(Messages.getString("SOFT_QUOTA"));
 		lblChangeSoftQuota.pack();
 		
+		GridData data = new GridData(SWT.FILL, SWT.FILL, false, false);
+		data.widthHint = 100;
+		
 		spinnerSoftQuota = new Spinner(changeQuote, SWT.BORDER);
 		spinnerSoftQuota.setMinimum(DiskQuotaConstants.MIN_VALUE);
 		spinnerSoftQuota.setIncrement(1000);
 		spinnerSoftQuota.setMaximum(DiskQuotaConstants.MAX_VALUE);
-		spinnerSoftQuota.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		spinnerSoftQuota.setLayoutData(data);
 		spinnerSoftQuota.pack();
 		
 		if(profile != null && profile.getProfileData() != null) {
@@ -80,7 +83,7 @@ public class DiskQuotaProfileDialog implements IProfileDialog {
 		spinnerHardQuota.setMinimum(DiskQuotaConstants.MIN_VALUE);
 		spinnerHardQuota.setIncrement(1000);
 		spinnerHardQuota.setMaximum(DiskQuotaConstants.MAX_VALUE);
-		spinnerHardQuota.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		spinnerHardQuota.setLayoutData(data);
 		spinnerHardQuota.pack();
 		
 		if(profile != null && profile.getProfileData() != null) {
@@ -107,8 +110,6 @@ public class DiskQuotaProfileDialog implements IProfileDialog {
 
 	@Override
 	public void validateBeforeSave() throws ValidationException {
-		// TODO Auto-generated method stub
-		
 	}
 	
 }
