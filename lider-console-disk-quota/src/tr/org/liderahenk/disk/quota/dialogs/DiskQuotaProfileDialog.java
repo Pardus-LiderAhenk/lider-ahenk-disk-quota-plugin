@@ -7,7 +7,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Spinner;
 import org.slf4j.Logger;
@@ -29,7 +28,6 @@ public class DiskQuotaProfileDialog implements IProfileDialog {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DiskQuotaProfileDialog.class);
 	
-	// Widgets
 	private Spinner spinnerSoftQuota;
 	private Spinner spinnerHardQuota;
 	
@@ -48,56 +46,40 @@ public class DiskQuotaProfileDialog implements IProfileDialog {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(3, false));
 		
-		Group changeQuote = new Group(composite, SWT.SHADOW_ETCHED_IN);
-		changeQuote.setText(Messages.getString("CHANGE_QUOTA"));
-		changeQuote.setLayout(new GridLayout(3, false));
-		changeQuote.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false, 3, 2));
-		
-		Label lblChangeSoftQuota = new Label(changeQuote, SWT.NONE);
+		Label lblChangeSoftQuota = new Label(composite, SWT.NONE);
 		lblChangeSoftQuota.setText(Messages.getString("SOFT_QUOTA"));
-		lblChangeSoftQuota.pack();
 		
 		GridData data = new GridData(SWT.FILL, SWT.FILL, false, false);
 		data.widthHint = 100;
 		
-		spinnerSoftQuota = new Spinner(changeQuote, SWT.BORDER);
+		spinnerSoftQuota = new Spinner(composite, SWT.BORDER);
 		spinnerSoftQuota.setMinimum(DiskQuotaConstants.MIN_VALUE);
 		spinnerSoftQuota.setIncrement(1000);
 		spinnerSoftQuota.setMaximum(DiskQuotaConstants.MAX_VALUE);
 		spinnerSoftQuota.setLayoutData(data);
-		spinnerSoftQuota.pack();
 		
 		if(profile != null && profile.getProfileData() != null) {
 			spinnerSoftQuota.setSelection(Integer.parseInt((String) profile.getProfileData().get(DiskQuotaConstants.PARAMETERS.SOFT_QUOTA)));
 		}
 		
-		Label lblSoftQuotaMB = new Label(changeQuote, SWT.NONE);
+		Label lblSoftQuotaMB = new Label(composite, SWT.NONE);
 		lblSoftQuotaMB.setText("MB");
-		lblSoftQuotaMB.pack();
 		
-		Label lblChangeHardQuota = new Label(changeQuote, SWT.NONE);
+		Label lblChangeHardQuota = new Label(composite, SWT.NONE);
 		lblChangeHardQuota.setText(Messages.getString("HARD_QUOTA"));
-		lblChangeHardQuota.pack();
 		
-		spinnerHardQuota = new Spinner(changeQuote, SWT.BORDER);
+		spinnerHardQuota = new Spinner(composite, SWT.BORDER);
 		spinnerHardQuota.setMinimum(DiskQuotaConstants.MIN_VALUE);
 		spinnerHardQuota.setIncrement(1000);
 		spinnerHardQuota.setMaximum(DiskQuotaConstants.MAX_VALUE);
 		spinnerHardQuota.setLayoutData(data);
-		spinnerHardQuota.pack();
 		
 		if(profile != null && profile.getProfileData() != null) {
 			spinnerHardQuota.setSelection(Integer.parseInt((String) profile.getProfileData().get(DiskQuotaConstants.PARAMETERS.HARD_QUOTA)));
 		}
 		
-		Label lblHardQuotaMB = new Label(changeQuote, SWT.NONE);
+		Label lblHardQuotaMB = new Label(composite, SWT.NONE);
 		lblHardQuotaMB.setText("MB");
-		lblHardQuotaMB.pack();
-		
-		changeQuote.pack();
-		
-		composite.pack();
-		
 	}
 	
 	@Override
