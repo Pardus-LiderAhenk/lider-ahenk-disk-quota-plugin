@@ -4,7 +4,7 @@ Disk quota plugin for [Lider Ahenk project](http://www.liderahenk.org.tr).
 
 |                   | **user-oriented** | **machine-oriented** |
 |:-----------------:|:-----------------:|:--------------------:|
-| **task plugin**   |                   |                      |
+| **task plugin**   |                   |           x          |
 | **policy plugin** |         x         |                      |
 
 ## How to Build
