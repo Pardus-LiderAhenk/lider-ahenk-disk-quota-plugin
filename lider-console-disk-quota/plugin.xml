@@ -13,6 +13,11 @@
             id="tr.org.liderahenk.liderconsole.commands.DiskQuotaProfile"
             name="%command.profile">
       </command>
+      <command
+            categoryId="tr.org.liderahenk.liderconsole.commands.category"
+            id="tr.org.liderahenk.liderconsole.commands.DiskQuotaTask"
+            name="%command.task">
+      </command>
    </extension>
    
    <extension
@@ -40,6 +45,10 @@
 		       </and>
 		    </enabledWhen> -->        
       	</handler>
+  <handler
+        class="tr.org.liderahenk.disk.quota.handlers.DiskQuotaTaskHandler"
+        commandId="tr.org.liderahenk.liderconsole.commands.DiskQuotaTask">
+  </handler>
       	
       	<!-- Task handler -->
   </extension>
@@ -84,6 +93,38 @@
 					</visibleWhen> -->               
            		</command>
 		</menuContribution>
+  <menuContribution
+        allPopups="false"
+        locationURI="popup:tr.org.liderahenk.liderconsole.menus.ApplyTask?after=additions">
+     <command
+           commandId="tr.org.liderahenk.liderconsole.commands.DiskQuotaTask"
+           icon="icons/16/diskquota.png"
+           id="tr.org.liderahenk.liderconsole.commands.DiskQuotaTask"
+           tooltip="%command.task">
+        <visibleWhen>
+           <and>
+              <with
+                    variable="tr.org.liderahenk.liderconsole.core.sourceproviders.main.isSingleEntrySelected">
+                 <equals
+                       value="true">
+                 </equals>
+              </with>
+              <with
+                    variable="tr.org.liderahenk.liderconsole.core.sourceproviders.main.available">
+                 <equals
+                       value="true">
+                 </equals>
+              </with>
+              <with
+                    variable="tr.org.liderahenk.liderconsole.core.sourceproviders.main.isAhenkSelected">
+                 <equals
+                       value="true">
+                 </equals>
+              </with>
+           </and>
+        </visibleWhen>
+     </command>
+  </menuContribution>
       
       	<!-- Add extension point contribution for "task execution" dialogs -->
   </extension>

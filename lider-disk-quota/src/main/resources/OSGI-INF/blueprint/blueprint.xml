@@ -10,6 +10,13 @@
 	<cm:property-placeholder persistent-id="tr.org.liderahenk.disk.quota"
 		update-strategy="reload">
 	</cm:property-placeholder>
+	
+	<!-- ICommand implementation is used to process a task execution -->
+	<service ref="DiskQuotaCommand" interface="tr.org.liderahenk.lider.core.api.plugin.ICommand" />
+	<bean id="DiskQuotaCommand" class="tr.org.liderahenk.disk.quota.commands.DiskQuotaCommand">
+		<property name="resultFactory" ref="resultFactory" />
+		<property name="pluginInfo" ref="pluginInfoImpl" />
+	</bean>
 
 	<!-- IPluginInfo implementation is used to register plugin -->
 	<service ref="pluginInfoImpl"
