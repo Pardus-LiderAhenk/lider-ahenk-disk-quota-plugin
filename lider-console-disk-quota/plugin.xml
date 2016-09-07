@@ -139,5 +139,12 @@
            profileCommandId="tr.org.liderahenk.liderconsole.commands.DiskQuotaProfile">
      </policyItem>
   </extension>
+  
+	<!-- Add extension point contribution for i18n messages -->
+	<extension
+  		point="tr.org.liderahenk.liderconsole.core.i18n">
+  		<task code="get_quota" label="%command.task" />
+		<plugin name="disk-quota" label="%plugin.label" />
+  	</extension>
   	
 </plugin>
