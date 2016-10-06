@@ -17,7 +17,7 @@ class GetQuota(AbstractPlugin):
 
         self.get_quota = 'repquota -a -s | tail -n +6 | awk \'{print $1,$4,$5,$6}\''
 
-        self.logger.debug('[DISK-QUOTA] Parameters were initialized.')
+        self.logger.debug('Parameters were initialized.')
 
     def handle_task(self):
         try:
@@ -31,23 +31,26 @@ class GetQuota(AbstractPlugin):
                 detail = line.split(' ')
 
                 if str(detail[0]).strip() is not None and str(detail[0]).strip() != '':
-                    user = {'user': str(detail[0]).strip(), 'soft_quota': str(detail[1]).strip(), 'hard_quota': str(detail[2]).strip(), 'disk_usage': str(detail[3]).strip()}
+                    user = {'user': str(detail[0]).strip(), 'soft_quota': str(detail[1]).strip(),
+                            'hard_quota': str(detail[2]).strip(), 'disk_usage': str(detail[3]).strip()}
                     user_list.append(user)
 
                     self.logger.debug(
-                        '[DISK-QUOTA] user: {0}, soft_quota: {1}, hard_quota: {2}, disk_usage: {3}'
-                            .format(str(detail[0]).strip(), str(detail[1]).strip(), str(detail[2]).strip(), str(detail[3]).strip()))
+                        'user: {0}, soft_quota: {1}, hard_quota: {2}, disk_usage: {3}'
+                            .format(str(detail[0]).strip(), str(detail[1]).strip(), str(detail[2]).strip(),
+                                    str(detail[3]).strip()))
 
-            self.logger.info('[DISK-QUOTA] DISK-QUOTA task is handled successfully')
+            self.logger.info('DISK-QUOTA task is handled successfully')
             self.context.create_response(code=self.message_code.TASK_PROCESSED.value,
                                          message='Kota bilgileri başarıyla alındı.',
                                          data=json.dumps({'users': user_list}),
                                          content_type=self.get_content_type().APPLICATION_JSON.value)
 
         except Exception as e:
-            self.logger.error('[DISK-QUOTA] A problem occured while handling DISK-QUOTA task: {0}'.format(str(e)))
+            self.logger.error('A problem occured while handling DISK-QUOTA task: {0}'.format(str(e)))
             self.context.create_response(code=self.message_code.TASK_ERROR.value,
                                          message='DISK-QUOTA görevi uygulanırken bir hata oluştu.')
+
 
 def handle_task(task, context):
     gq = GetQuota(task, context)
