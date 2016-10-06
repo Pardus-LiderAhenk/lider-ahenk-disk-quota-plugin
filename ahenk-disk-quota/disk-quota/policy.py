@@ -27,23 +27,25 @@ class DiskQuota(AbstractPlugin):
         self.soft_quota = str(int(self.parameters['soft-quota']) * 1024)
         self.hard_quota = str(int(self.parameters['hard-quota']) * 1024)
 
-        self.logger.debug('[DISK-QUOTA] Parameters were initialized.')
+        self.logger.debug('Parameters were initialized.')
 
     def handle_policy(self):
-        self.logger.debug('[DISK-QUOTA] Policy handling...')
+        self.logger.debug('Policy handling...')
         try:
             self.execute(self.mount)
-            self.logger.debug('[DISK-QUOTA] {}'.format(self.mount))
+            self.logger.debug('{}'.format(self.mount))
 
             self.execute(self.quotaon_all)
-            self.logger.debug('[DISK-QUOTA] {}'.format(self.quotaon_all))
+            self.logger.debug('{}'.format(self.quotaon_all))
 
             self.execute(self.quotaon_avug)
-            self.logger.debug('[DISK-QUOTA] {}'.format(self.quotaon_avug))
+            self.logger.debug('{}'.format(self.quotaon_avug))
 
             self.execute(self.set_quota.format(self.username, self.soft_quota, self.hard_quota))
-            self.logger.debug('[DISK-QUOTA] Set soft and hard quota. Username: {0}, Soft Quota: {1}, Hard Quota: {2}'.format(self.username, self.soft_quota, self.hard_quota))
-
+            self.logger.debug(
+                'Set soft and hard quota. Username: {0}, Soft Quota: {1}, Hard Quota: {2}'.format(self.username,
+                                                                                                  self.soft_quota,
+                                                                                                  self.hard_quota))
 
             self.context.create_response(code=self.get_message_code().POLICY_PROCESSED.value,
                                          message='Kotalar başarıyla güncellendi.')

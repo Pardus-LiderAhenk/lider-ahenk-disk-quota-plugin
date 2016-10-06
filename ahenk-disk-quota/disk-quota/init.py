@@ -11,13 +11,13 @@ class Init(AbstractPlugin):
         self.context = context
         self.logger = self.get_logger()
 
-        self.logger.debug('[DISK-QUOTA-INIT] Parameters were initialized.')
+        self.logger.debug('Parameters were initialized.')
 
     def handle_init_mode(self):
-
-        if self.is_installed('quota') == False:
-            self.logger.debug('[DISK-QUOTA-INIT] Installing quota with apt-get...')
+        if self.is_installed('quota') is False:
+            self.logger.debug('Installing quota with apt-get...')
             self.install_with_apt_get('quota')
+
 
 def handle_mode(context):
     init = Init(context)
