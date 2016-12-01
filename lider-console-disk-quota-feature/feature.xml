@@ -2,7 +2,7 @@
 <feature
       id="lider-console-disk-quota-feature"
       label="Feature"
-      version="1.0.0">
+      version="1.0.0.qualifier">
 
    <description url="http://www.example.com/description">
       [Enter Feature Description here.]
@@ -21,6 +21,6 @@
          download-size="0"
          install-size="0"
          version="1.0.0"
-         unpack="false"/>
+         unpack="false.qualifier"/>
 
 </feature>
