@@ -20,7 +20,7 @@
          id="lider-console-disk-quota"
          download-size="0"
          install-size="0"
-         version="1.0.0"
+         version="1.0.0.qualifier"
          unpack="false.qualifier"/>
 
 </feature>
