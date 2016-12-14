@@ -5,7 +5,7 @@
 def info():
     inf = dict()
     inf['name'] = 'disk-quota'
-    inf['version'] = '1.0.0'
+    inf['version'] = '1.0.0-alfa'
     inf['support'] = 'debian'
     inf['description'] = 'Disk-Quota plugin provides to get current soft - hard quota and changing them.'
     inf['task'] = True
