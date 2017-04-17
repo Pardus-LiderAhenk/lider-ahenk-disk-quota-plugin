@@ -140,6 +140,17 @@
      </policyItem>
   </extension>
   
+	<!-- Add extension point contribution for "task execution" dialogs -->
+	<extension
+        point="tr.org.liderahenk.liderconsole.core.taskmenu">
+     <taskItem
+           label="%command.profile"
+           pluginName="disk-quota"
+           pluginVersion="1.0.0"
+           taskCommandId="tr.org.liderahenk.liderconsole.commands.DiskQuotaTask">
+     </taskItem>
+  </extension>
+  
 	<!-- Add extension point contribution for i18n messages -->
 	<extension
   		point="tr.org.liderahenk.liderconsole.core.i18n">

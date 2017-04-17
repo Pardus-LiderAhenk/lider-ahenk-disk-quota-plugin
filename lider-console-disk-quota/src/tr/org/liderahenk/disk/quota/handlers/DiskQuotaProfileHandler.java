@@ -15,12 +15,13 @@ import tr.org.liderahenk.disk.quota.dialogs.DiskQuotaProfileDialog;
 import tr.org.liderahenk.disk.quota.i18n.Messages;
 import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
 import tr.org.liderahenk.liderconsole.core.editorinput.ProfileEditorInput;
+import tr.org.liderahenk.liderconsole.core.handlers.LiderAbstractHandler;
 
 /**
  * Profile definition handler for disk-quota plugin.
  *
  */
-public class DiskQuotaProfileHandler extends AbstractHandler {
+public class DiskQuotaProfileHandler extends LiderAbstractHandler {
 
 	private Logger logger = LoggerFactory.getLogger(DiskQuotaProfileHandler.class);
 
@@ -43,5 +44,14 @@ public class DiskQuotaProfileHandler extends AbstractHandler {
 
         return null;
 	}
+	
+	
+	@Override
+	public ProfileEditorInput getEditorInput() {
+		// TODO Auto-generated method stub
+		return new ProfileEditorInput(Messages.getString("DISK_QUOTA"), DiskQuotaConstants.PLUGIN_NAME, 
+				DiskQuotaConstants.PLUGIN_VERSION, new DiskQuotaProfileDialog());
+	}
+	
 
 }
