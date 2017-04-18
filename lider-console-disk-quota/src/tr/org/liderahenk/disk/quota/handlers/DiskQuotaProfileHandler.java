@@ -25,25 +25,25 @@ public class DiskQuotaProfileHandler extends LiderAbstractHandler {
 
 	private Logger logger = LoggerFactory.getLogger(DiskQuotaProfileHandler.class);
 
-	public Object execute(ExecutionEvent event) throws ExecutionException {
-		
-		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
-        IWorkbenchPage page = window.getActivePage();
-        
-        try {
-			// Here we open default profile editor implementation so that all
-			// profiles can be handled by Lider Console Core.
-			// We also pass our profile dialog implementation as parameter to
-			// allow the editor use it dynamically.
-			page.openEditor(new ProfileEditorInput(Messages.getString("DISK_QUOTA"), DiskQuotaConstants.PLUGIN_NAME, 
-					DiskQuotaConstants.PLUGIN_VERSION, new DiskQuotaProfileDialog()), 
-					LiderConstants.EDITORS.PROFILE_EDITOR);
-		} catch (PartInitException e) {
-			logger.error(e.getMessage(), e);
-		}
-
-        return null;
-	}
+//	public Object execute(ExecutionEvent event) throws ExecutionException {
+//		
+//		IWorkbenchWindow window = HandlerUtil.getActiveWorkbenchWindowChecked(event);
+//        IWorkbenchPage page = window.getActivePage();
+//        
+//        try {
+//			// Here we open default profile editor implementation so that all
+//			// profiles can be handled by Lider Console Core.
+//			// We also pass our profile dialog implementation as parameter to
+//			// allow the editor use it dynamically.
+//			page.openEditor(new ProfileEditorInput(Messages.getString("DISK_QUOTA"), DiskQuotaConstants.PLUGIN_NAME, 
+//					DiskQuotaConstants.PLUGIN_VERSION, new DiskQuotaProfileDialog()), 
+//					LiderConstants.EDITORS.PROFILE_EDITOR);
+//		} catch (PartInitException e) {
+//			logger.error(e.getMessage(), e);
+//		}
+//
+//        return null;
+//	}
 	
 	
 	@Override
