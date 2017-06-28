@@ -30,6 +30,7 @@ public class DiskQuotaProfileDialog implements IProfileDialog {
 	
 	private Spinner spinnerSoftQuota;
 	private Spinner spinnerHardQuota;
+	private Spinner spinnerDefaultQuota;
 	
 	@Override
 	public void init() {
@@ -80,6 +81,24 @@ public class DiskQuotaProfileDialog implements IProfileDialog {
 		
 		Label lblHardQuotaMB = new Label(composite, SWT.NONE);
 		lblHardQuotaMB.setText("MB");
+		
+		Label lblDefaultQuota = new Label(composite, SWT.NONE);
+		lblDefaultQuota.setText(Messages.getString("DEFAULT_QUOTA"));
+		lblDefaultQuota.setToolTipText(Messages.getString("DEFAULT_QUOTA_DESC"));
+		
+		spinnerDefaultQuota = new Spinner(composite, SWT.BORDER);
+		spinnerDefaultQuota.setMinimum(DiskQuotaConstants.MIN_VALUE);
+		spinnerDefaultQuota.setIncrement(1000);
+		spinnerDefaultQuota.setMaximum(DiskQuotaConstants.MAX_VALUE);
+		spinnerDefaultQuota.setLayoutData(data);
+		spinnerDefaultQuota.setToolTipText(Messages.getString("DEFAULT_QUOTA_DESC"));
+		
+		if(profile != null && profile.getProfileData() != null && profile.getProfileData().get(DiskQuotaConstants.PARAMETERS.DEFAULT_QUOTA) != null) {
+			spinnerDefaultQuota.setSelection(Integer.parseInt((String) profile.getProfileData().get(DiskQuotaConstants.PARAMETERS.DEFAULT_QUOTA)));
+		}
+		
+		Label lblDefaultQuotaMB = new Label(composite, SWT.NONE);
+		lblDefaultQuotaMB.setText("MB");
 	}
 	
 	@Override
@@ -87,6 +106,7 @@ public class DiskQuotaProfileDialog implements IProfileDialog {
 		Map<String, Object> profileData = new HashMap<String, Object>();
 		profileData.put(DiskQuotaConstants.PARAMETERS.SOFT_QUOTA, spinnerSoftQuota.getText());
 		profileData.put(DiskQuotaConstants.PARAMETERS.HARD_QUOTA, spinnerHardQuota.getText());
+		profileData.put(DiskQuotaConstants.PARAMETERS.DEFAULT_QUOTA, spinnerDefaultQuota.getText());
 		return profileData;
 	}
 
