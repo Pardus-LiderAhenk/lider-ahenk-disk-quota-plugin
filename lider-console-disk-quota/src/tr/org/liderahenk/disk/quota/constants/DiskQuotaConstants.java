@@ -13,6 +13,7 @@ public class DiskQuotaConstants {
 	public static final class PARAMETERS {
 		public static final String SOFT_QUOTA = "soft-quota";
 		public static final String HARD_QUOTA = "hard-quota";
+		public static final String DEFAULT_QUOTA = "default-quota";
 	}
 	
 }
