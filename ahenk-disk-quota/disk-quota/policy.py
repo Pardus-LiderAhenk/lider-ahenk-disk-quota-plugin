@@ -27,6 +27,7 @@ class DiskQuota(AbstractPlugin):
         self.quotaon_all = 'quotaon --all'
         self.quotaon_avug = 'quotaon -avug'
         self.set_quota = 'setquota --always-resolve -u {0} {1} {2} 0 0 --all'
+        self.get_quota = 'quota -u {0} | awk \'{{print $4}}\' | tail -1'
 
         self.parameters = json.loads(self.data)
 
@@ -34,11 +35,14 @@ class DiskQuota(AbstractPlugin):
         self.hard_quota = str(int(self.parameters['hard-quota']) * 1024)
         self.default_quota = str(int(self.parameters['default-quota']) * 1024)
 
+        self.old_quota = None
+
         self.logger.debug('Parameters were initialized.')
 
     def handle_policy(self):
         self.logger.debug('Policy handling...')
         try:
+            self.old_quota = self.execute(self.get_quota.format(self.username))[1]
             # Check fstab & append 'usrquota' option if not exists
             fs = Fstab()
             fs.read('/etc/fstab')
@@ -70,7 +74,23 @@ class DiskQuota(AbstractPlugin):
                                                                                                   self.hard_quota))
 
             self.create_default_quota_file()
+
+            result = dict()
+            if self.context.is_mail_send():
+                mail_content = self.context.get_mail_content()
+                if mail_content.__contains__('{ahenk-ip}'):
+                    mail_content = str(mail_content).replace('{ahenk-ip}', ' {0} IP\'li Ahenk\'te çalıştırılan '.format(
+                        str(self.Hardware.ip_addresses())))
+                if mail_content.__contains__('{old-quota}'):
+                    mail_content = str(mail_content).replace('{old-quota}',
+                                                             ' eski kota değeri {0} olan '.format(str(self.old_quota)))
+                self.context.set_mail_content(mail_content)
+                result['mail_content'] = str(self.context.get_mail_content())
+                result['mail_subject'] = str(self.context.get_mail_subject())
+                result['mail_send'] = self.context.is_mail_send()
+
             self.context.create_response(code=self.get_message_code().POLICY_PROCESSED.value,
+                                         data=json.dumps(result),
                                          message='Kotalar başarıyla güncellendi.')
 
         except Exception as e:
@@ -79,10 +99,9 @@ class DiskQuota(AbstractPlugin):
                                          message='Disk Quota profili uygulanırken bir hata oluştu.')
 
     def create_default_quota_file(self):
-        self.write_file('default_quota',self.default_quota)
+        self.write_file('default_quota', self.default_quota)
 
 
 def handle_policy(profile_data, context):
     dq = DiskQuota(profile_data, context)
     dq.handle_policy()
-
