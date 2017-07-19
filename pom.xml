@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>tr.org.liderahenk</groupId>
@@ -55,21 +56,49 @@
 			<id>mars</id>
 			<url>${mars.repo.url}</url>
 			<layout>p2</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>apache-ds</id>
 			<url>${apache.ds.repo.url}</url>
 			<layout>p2</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>orbit</id>
 			<url>${orbit.repo.url}</url>
 			<layout>p2</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>mars-update</id>
 			<url>${mars.update.repo.url}</url>
 			<layout>p2</layout>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>never</updatePolicy>
+			</releases>
+			<snapshots>
+				<enabled>false</enabled>
+			</snapshots>
 		</repository>
 		<repository>
 			<id>p2-maven-plugin-local</id>
@@ -83,8 +112,8 @@
 		<module>lider-disk-quota-feature</module>
 		<module>lider-console-disk-quota</module>
 		<module>ahenk-disk-quota</module>
-    	<module>lider-console-disk-quota-feature</module>
-  </modules>
+		<module>lider-console-disk-quota-feature</module>
+	</modules>
 
 	<build>
 		<plugins>
