@@ -120,7 +120,7 @@ public class DiskQuotaProfileDialog implements IMailContentProviderDialog {
 
 	@Override
 	public String getMailContent() {
-		return "{old-quota} {ahenk-ip} Disk kota parametreleri:\nKota başlangıç tarihi: {activationDate}, (varsa) kota bitiş tarihi: {expirationDate}\nKota değerleri (MB): {soft-quota} soft, {hard-quota} hard\n(Varsa) bitiş tarihinde dönülecek kota değeri: {default-quota}\n\n";
+		return "{old-quota} {ahenk-ip} disk kota değerleri şu şekildedir: {soft-quota} (soft), {hard-quota} (hard), bitiş tarihinde dönülecek varsayılan kota değeri: {default-quota}\nKota başlangıç tarihi: {activationDate}\nKota bitiş tarihi: {expirationDate}";
 	}
 
 	@Override
