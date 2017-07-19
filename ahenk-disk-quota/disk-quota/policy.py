@@ -79,11 +79,18 @@ class DiskQuota(AbstractPlugin):
             if self.context.is_mail_send():
                 mail_content = self.context.get_mail_content()
                 if mail_content.__contains__('{ahenk-ip}'):
-                    mail_content = str(mail_content).replace('{ahenk-ip}', ' {0} IP\'li Ahenk\'te çalıştırılan '.format(
+                    mail_content = str(mail_content).replace('{ahenk-ip}', ' {0} IP\'li Ahenk\'teki yeni'.format(
                         str(self.Hardware.ip_addresses())))
                 if mail_content.__contains__('{old-quota}'):
                     mail_content = str(mail_content).replace('{old-quota}',
-                                                             ' eski kota değeri {0} olan '.format(str(self.old_quota)))
+                                                             ' Eski kota değeri {0} MB olan'.format(str(int(self.old_quota)/1024)))
+                if mail_content.__contains__('{soft-quota}'):
+                    mail_content = str(mail_content).replace('{soft-quota} MB',str(int(self.soft_quota)/1024))
+                if mail_content.__contains__('{hard-quota}'):
+                    mail_content = str(mail_content).replace('{hard-quota} MB', str(int(self.hard_quota)/1024))
+                if mail_content.__contains__('{default-quota}'):
+                    mail_content = str(mail_content).replace('{default-quota} MB', str(int(self.default_quota)/1024))
+
                 self.context.set_mail_content(mail_content)
                 result['mail_content'] = str(self.context.get_mail_content())
                 result['mail_subject'] = str(self.context.get_mail_subject())
@@ -91,7 +98,8 @@ class DiskQuota(AbstractPlugin):
 
             self.context.create_response(code=self.get_message_code().POLICY_PROCESSED.value,
                                          data=json.dumps(result),
-                                         message='Kotalar başarıyla güncellendi.')
+                                         message='Kotalar başarıyla güncellendi.',
+                                         content_type=self.get_content_type().APPLICATION_JSON.value)
 
         except Exception as e:
             self.logger.error('[DiskQuota] A problem occurred while handling browser profile: {0}'.format(str(e)))
