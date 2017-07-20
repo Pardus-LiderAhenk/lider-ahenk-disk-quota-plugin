@@ -85,11 +85,11 @@ class DiskQuota(AbstractPlugin):
                     mail_content = str(mail_content).replace('{old-quota}',
                                                              ' Eski kota değeri {0} MB olan'.format(str(int(self.old_quota)/1024)))
                 if mail_content.__contains__('{soft-quota}'):
-                    mail_content = str(mail_content).replace('{soft-quota} MB',str(int(self.soft_quota)/1024))
+                    mail_content = str(mail_content).replace('{soft-quota}',str(int(self.soft_quota)/1024)+' MB')
                 if mail_content.__contains__('{hard-quota}'):
-                    mail_content = str(mail_content).replace('{hard-quota} MB', str(int(self.hard_quota)/1024))
+                    mail_content = str(mail_content).replace('{hard-quota}', str(int(self.hard_quota)/1024)+' MB')
                 if mail_content.__contains__('{default-quota}'):
-                    mail_content = str(mail_content).replace('{default-quota} MB', str(int(self.default_quota)/1024))
+                    mail_content = str(mail_content).replace('{default-quota}', str(int(self.default_quota)/1024)+' MB')
 
                 self.context.set_mail_content(mail_content)
                 result['mail_content'] = str(self.context.get_mail_content())
