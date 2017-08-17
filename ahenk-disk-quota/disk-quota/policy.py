@@ -42,6 +42,11 @@ class DiskQuota(AbstractPlugin):
     def handle_policy(self):
         self.logger.debug('Policy handling...')
         try:
+            
+            if 'username' in self.context.data and self.context.get('username') is not None:
+                self.logger.debug('This is user profile, parameters reinitializing.')
+                self.username = self.context.get('username')
+            
             self.old_quota = self.execute(self.get_quota.format(self.username))[1]
             # Check fstab & append 'usrquota' option if not exists
             fs = Fstab()
