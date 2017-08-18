@@ -18,6 +18,11 @@
             id="tr.org.liderahenk.liderconsole.commands.DiskQuotaTask"
             name="%command.task">
       </command>
+    <command
+            categoryId="tr.org.liderahenk.liderconsole.commands.category"
+            id="tr.org.liderahenk.liderconsole.commands.DiskQuotaPolicyList"            
+            name="%editor.disk.quota">
+      </command>
    </extension>
    
    <extension
@@ -49,12 +54,28 @@
         class="tr.org.liderahenk.disk.quota.handlers.DiskQuotaTaskHandler"
         commandId="tr.org.liderahenk.liderconsole.commands.DiskQuotaTask">
   </handler>
+
+
+      	<!-- Editor handler -->
+       <handler
+            class="tr.org.liderahenk.disk.quota.handlers.DiskQuotaPolicyListHandler"
+            commandId="tr.org.liderahenk.liderconsole.commands.DiskQuotaPolicyList">
+      </handler>
       	
-      	<!-- Task handler -->
   </extension>
   
   <extension
          point="org.eclipse.ui.menus">
+         
+      <menuContribution
+            locationURI="menu:tr.org.liderahenk.liderconsole.menus.LiderMain?after=additions">
+  		<command
+           	  commandId="tr.org.liderahenk.liderconsole.commands.DiskQuotaPolicyList"
+	          id="tr.org.liderahenk.liderconsole.commands.DiskQuotaPolicyList"
+	          icon="icons/16/diskquota.png"
+	          tooltip="%editor.disk.quota">
+        </command>
+         </menuContribution>
 
 		<!-- Add menu command for "profile definition" dialog -->
 		<menuContribution
@@ -160,5 +181,15 @@
   		<task code="get_quota" label="%command.task" />
 		<plugin name="disk-quota" label="%plugin.label" />
   	</extension>
+  	
+	<extension
+		point="org.eclipse.ui.editors">
+		<editor
+		    class="tr.org.liderahenk.disk.quota.editors.DiskQutaPolicyListEditor"
+		    icon="icons/16/diskquota.png"
+		    id="tr.org.liderahenk.disk.quota.editors.DiskQutaPolicyListEditor"
+		    name="%editor.disk.quota">
+	    </editor> 		
+	</extension>
   	
 </plugin>
