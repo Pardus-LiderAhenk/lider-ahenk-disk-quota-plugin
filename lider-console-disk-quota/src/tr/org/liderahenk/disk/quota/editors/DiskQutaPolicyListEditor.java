@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
+import org.apache.commons.lang3.StringUtils;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.jface.viewers.ColumnLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -203,6 +204,20 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 			public String getText(Object element) {
 				if (element instanceof AppliedPolicy) {
 					return ((AppliedPolicy) element).getLabel();
+				}
+				return Messages.getString("UNTITLED");
+			}
+		});
+
+		TableViewerColumn uidColumn = SWTResourceManager.createTableViewerColumn(tableViewer,
+				Messages.getString("APPLIED_ENTRIES"), 240);
+		uidColumn.getColumn().setAlignment(SWT.LEFT);
+		uidColumn.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if (element instanceof AppliedPolicy && ((AppliedPolicy) element).getUidList() != null
+						&& !((AppliedPolicy) element).getUidList().isEmpty()) {
+					return StringUtils.join(((AppliedPolicy) element).getUidList(), ",");
 				}
 				return Messages.getString("UNTITLED");
 			}
