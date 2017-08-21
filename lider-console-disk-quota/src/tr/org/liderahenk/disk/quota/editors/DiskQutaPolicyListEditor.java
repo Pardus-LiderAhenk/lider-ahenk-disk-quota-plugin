@@ -109,12 +109,12 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 
 			@Override
 			public String getSheetName() {
-				return Messages.getString("AGENT_INFO");
+				return Messages.getString("QUOTA_REPORT");
 			}
 
 			@Override
 			public String getReportName() {
-				return Messages.getString("AGENT_INFO");
+				return Messages.getString("QUOTA_REPORT");
 			}
 		});
 		createTableColumns();
