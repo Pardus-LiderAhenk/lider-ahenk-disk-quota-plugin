@@ -15,7 +15,7 @@ class GetQuota(AbstractPlugin):
         self.logger = self.get_logger()
         self.message_code = self.get_message_code()
 
-        self.get_quota = 'repquota -a -s | tail -n +6 | awk \'{print $1,$3,$4,$5}\''
+        self.get_quota = 'repquota -a -s | tail -n +6 | awk \'{print $1,$4,$5,$3}\''
 
         self.logger.debug('Parameters were initialized.')
 
