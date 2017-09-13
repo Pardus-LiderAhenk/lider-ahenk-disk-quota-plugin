@@ -28,7 +28,7 @@ class DiskQuota(AbstractPlugin):
         #self.set_quota = 'setquota --always-resolve -u {0} {1} {2} 0 0 --all'
         self.set_quota = 'quotatool -u {0} -b -q {1} -l {2} /home'
         #self.get_quota = 'quota -u {0} | awk \'{{print $4}}\' | tail -1'
-        self.get_quota = 'repquota -a | grep {0} | awk \'{{print $4}}\' | tail -1'
+        self.get_quota = 'repquota /home | grep {0} | awk \'{{print $5}}\''
 
         self.parameters = json.loads(self.data)
 
