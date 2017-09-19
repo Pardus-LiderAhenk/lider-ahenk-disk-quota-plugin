@@ -44,10 +44,10 @@ class DiskQuota(AbstractPlugin):
         self.logger.debug('Policy handling...')
         try:
             self.username = self.context.get('username')
-            
-            
+
+
             self.old_quota = self.execute(self.get_quota.format(self.username))[1]
-            
+
             self.execute(self.set_quota.format(self.username, self.soft_quota, self.hard_quota))
             self.logger.debug(
                 'Set soft and hard quota. Username: {0}, Soft Quota: {1}, Hard Quota: {2}'.format(self.username,
@@ -64,7 +64,7 @@ class DiskQuota(AbstractPlugin):
                         str(self.Hardware.ip_addresses())))
                 if mail_content.__contains__('{old-quota}'):
                     mail_content = str(mail_content).replace('{old-quota}',
-                                                             ' Eski kota değeri {0} MB olan'.format(str(int(self.old_quota)/1024)))
+                                                             ' Mevcut kota değeri {0} MB olan'.format(str(int(self.old_quota)/1024)))
                 if mail_content.__contains__('{soft-quota}'):
                     mail_content = str(mail_content).replace('{soft-quota}',str(int(self.soft_quota)/1024)+' MB')
                 if mail_content.__contains__('{hard-quota}'):
