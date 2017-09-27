@@ -1,6 +1,7 @@
 package tr.org.liderahenk.disk.quota.editors;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
@@ -14,6 +15,7 @@ import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.osgi.service.runnable.ApplicationLauncher;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
@@ -38,6 +40,7 @@ import tr.org.liderahenk.liderconsole.core.config.ConfigProvider;
 import tr.org.liderahenk.liderconsole.core.constants.LiderConstants;
 import tr.org.liderahenk.liderconsole.core.dialogs.AppliedPolicyDialog;
 import tr.org.liderahenk.liderconsole.core.editorinput.DefaultEditorInput;
+import tr.org.liderahenk.liderconsole.core.ldap.enums.DNType;
 import tr.org.liderahenk.liderconsole.core.ldap.model.LdapEntry;
 import tr.org.liderahenk.liderconsole.core.ldap.utils.LdapUtils;
 import tr.org.liderahenk.liderconsole.core.model.AppliedPolicy;
@@ -59,6 +62,8 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 	private Button btnViewDetail;
 
 	private AppliedPolicy selectedPolicy;
+
+	private Button btnSearch;
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
@@ -137,6 +142,7 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 					clearPolicyTable();
 					populateTable((LdapEntry) firstElement);
 				}
+				btnViewDetail.setEnabled(true);
 			}
 		});
 		//
@@ -197,13 +203,13 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 	private void createTableColumns() {
 
 		TableViewerColumn polColumn = SWTResourceManager.createTableViewerColumn(tableViewer,
-				Messages.getString("POLICY"), 300);
+				"POLİTİKA TİPİ", 300);
 		polColumn.getColumn().setAlignment(SWT.LEFT);
 		polColumn.setLabelProvider(new ColumnLabelProvider() {
 			@Override
 			public String getText(Object element) {
 				if (element instanceof AppliedPolicy) {
-					return ((AppliedPolicy) element).getLabel();
+					return ((AppliedPolicy) element).getPolicyType() == 0 ? "Kullanici" : "Grup";
 				}
 				return Messages.getString("UNTITLED");
 			}
@@ -340,7 +346,7 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 
 		Composite filterContainer = new Composite(parent, SWT.NONE);
 		filterContainer.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
-		filterContainer.setLayout(new GridLayout(2, false));
+		filterContainer.setLayout(new GridLayout(3, false));
 
 		// Search label
 		Label lblSearch = new Label(filterContainer, SWT.NONE);
@@ -351,10 +357,14 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 		txtSearch = new Text(filterContainer, SWT.BORDER | SWT.SEARCH);
 		txtSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
 		txtSearch.setToolTipText(Messages.getString("SEARCH_TASK_TOOLTIP"));
-		txtSearch.addModifyListener(new ModifyListener() {
+		
+		
+		btnSearch = new Button(filterContainer, SWT.NONE);
+		btnSearch.setText("ARA");
+		btnSearch.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, false));
+		btnSearch.addSelectionListener(new SelectionListener() {
 			@Override
-			public void modifyText(ModifyEvent e) {
-				// tableFilter.setSearchText(txtSearch.getText());
+			public void widgetSelected(SelectionEvent e) {
 				try {
 					// Clear policy table
 					clearPolicyTable();
@@ -392,7 +402,22 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 					e1.printStackTrace();
 				}
 			}
+			
+			
+
+			@Override
+			public void widgetDefaultSelected(SelectionEvent e) {
+			}
 		});
+		
+		
+//		txtSearch.addModifyListener(new ModifyListener() {
+//			@Override
+//			public void modifyText(ModifyEvent e) {
+//				// tableFilter.setSearchText(txtSearch.getText());
+//				
+//			}
+//		});
 
 		Label lblDesc = new Label(filterContainer, SWT.NONE);
 		lblDesc.setText(Messages.getString("SELECT_USER_OU_DESC"));
@@ -411,7 +436,9 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 		buttonComposite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false));
 		buttonComposite.setLayout(new GridLayout(3, false));
 
+		
 		btnViewDetail = new Button(buttonComposite, SWT.NONE);
+		btnViewDetail.setEnabled(false);
 		btnViewDetail.setText(Messages.getString("VIEW_DETAIL"));
 		btnViewDetail.setLayoutData(new GridData(SWT.BEGINNING, SWT.CENTER, false, false));
 		btnViewDetail.setImage(
@@ -420,7 +447,7 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				if (null == getSelectedPolicy()) {
-					Notifier.warning(null, Messages.getString("PLEASE_SELECT_RECORD"));
+					Notifier.warning(null, Messages.getString("NO_POLICY_APPLIED"));
 					return;
 				}
 				try {
@@ -446,11 +473,42 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 	 */
 	private void populateTable(LdapEntry selectedEntry) {
 		try {
+			List<AppliedPolicy> policiesList = new ArrayList<AppliedPolicy>();
 			List<AppliedPolicy> policies = null;
 			policies = PolicyRestUtils.listAppliedPolicies(null, null, null, null,
 					ConfigProvider.getInstance().getInt(LiderConstants.CONFIG.APPLIED_POLICIES_MAX_SIZE),
 					DiskQuotaConstants.PLUGIN_NAME, selectedEntry.getType(), selectedEntry.getDistinguishedName());
-			tableViewer.setInput(policies != null ? policies : new ArrayList<AppliedPolicy>());
+			
+			for (AppliedPolicy appliedPolicy : policies) {
+				if (appliedPolicy.getUidList().size() > 1){
+					
+					if (selectedEntry.getType() == DNType.USER) {
+						
+						List<String> cloneList = new ArrayList<String>(1);
+						cloneList.add(selectedEntry.getDistinguishedName());
+						appliedPolicy.setUidList(cloneList);
+						appliedPolicy.setPolicyType(1);
+						policiesList.add(appliedPolicy);
+						
+						
+					}else {
+						for(String uid : appliedPolicy.getUidList()){
+							AppliedPolicy clone = appliedPolicy.clone();
+							List<String> cloneList = new ArrayList<String>(1);
+							cloneList.add(uid);
+							clone.setUidList(cloneList);
+							clone.setPolicyType(1);
+							policiesList.add(clone);
+						}
+					}
+					
+				}else {
+					policiesList.add(appliedPolicy);
+				}
+			}
+			
+			
+			tableViewer.setInput(policiesList != null ? policiesList : new ArrayList<AppliedPolicy>());
 			tableViewer.refresh();
 		} catch (Exception e) {
 			logger.error(e.getMessage(), e);
