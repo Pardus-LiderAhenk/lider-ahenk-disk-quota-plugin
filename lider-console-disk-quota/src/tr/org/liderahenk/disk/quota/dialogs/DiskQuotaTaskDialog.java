@@ -14,7 +14,11 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TableViewerColumn;
+import org.eclipse.jface.viewers.Viewer;
+import org.eclipse.jface.viewers.ViewerFilter;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -24,6 +28,7 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
+import org.eclipse.swt.widgets.Text;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventHandler;
 import org.slf4j.Logger;
@@ -134,6 +139,9 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 			job.schedule();
 		}
 	};
+	private Text textSearch;
+
+	private TableFilter tableFilter;
 
 	@Override
 	public Control createTaskDialogArea(Composite parent) {
@@ -141,6 +149,11 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayout(new GridLayout(1, false));
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
+		
+		textSearch = new Text(composite, SWT.BORDER);
+		textSearch.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
+		
+		
 		
 		viewer = new TableViewer(composite, SWT.MULTI | SWT.H_SCROLL
 		        | SWT.V_SCROLL | SWT.FULL_SELECTION | SWT.BORDER);
@@ -161,7 +174,38 @@ public class DiskQuotaTaskDialog extends DefaultTaskDialog {
 	    gridData.heightHint = 300;
 	    viewer.getControl().setLayoutData(gridData);
 	    
+	   tableFilter=new TableFilter();
+	    
+	    viewer.addFilter(new TableFilter());
+	    
+	    textSearch.addModifyListener(new ModifyListener() {
+			@Override
+			public void modifyText(ModifyEvent e) {
+				tableFilter.setSearchText(textSearch.getText());
+				viewer.refresh();
+			}
+		});
+	    
 		return null;
+	}
+	
+	public class TableFilter extends ViewerFilter {
+
+		private String searchString;
+
+		public void setSearchText(String s) {
+			this.searchString = ".*" + s + ".*";
+		}
+
+		@Override
+		public boolean select(Viewer viewer, Object parentElement, Object element) {
+			if (searchString == null || searchString.length() == 0) {
+				return true;
+			}
+			
+			return ((String) element).matches(searchString);
+		}
+
 	}
 	
 	// create the columns for the table
