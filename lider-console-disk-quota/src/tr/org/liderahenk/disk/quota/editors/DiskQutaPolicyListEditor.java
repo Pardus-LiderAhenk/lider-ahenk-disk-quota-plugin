@@ -50,6 +50,7 @@ import tr.org.liderahenk.liderconsole.core.ldap.model.LdapEntry;
 import tr.org.liderahenk.liderconsole.core.ldap.utils.LdapUtils;
 import tr.org.liderahenk.liderconsole.core.model.AppliedPolicy;
 import tr.org.liderahenk.liderconsole.core.model.Command;
+import tr.org.liderahenk.liderconsole.core.model.CommandExecution;
 import tr.org.liderahenk.liderconsole.core.model.Profile;
 import tr.org.liderahenk.liderconsole.core.rest.utils.PolicyRestUtils;
 import tr.org.liderahenk.liderconsole.core.utils.IExportableTableViewer;
@@ -349,6 +350,23 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 				return "-";
 			}
 		});
+		
+		TableViewerColumn appliedQouta = SWTResourceManager.createTableViewerColumn(tableViewer,
+				"UYGULANMA DURUMU", 140);
+		appliedQouta.getColumn().setAlignment(SWT.LEFT);
+		appliedQouta.setLabelProvider(new ColumnLabelProvider() {
+			@Override
+			public String getText(Object element) {
+				if (element instanceof AppliedPolicy) {
+					if (((AppliedPolicy) element).getAppliedToUser()){
+						return "EVET";
+					}else {
+						return "HAYIR";
+					}
+				}
+				return Messages.getString("UNTITLED");
+			}
+		});
 	}
 
 	private void createTableFilterArea(Composite parent) {
@@ -513,6 +531,8 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 			for (AppliedPolicy appliedPolicy : policies) {
 				if (appliedPolicy.getUidList().size() > 1){
 					
+					List<Command> commands = PolicyRestUtils.listCommands(appliedPolicy.getId());
+					
 					if (selectedEntry.getType() == DNType.USER) {
 						
 						List<String> cloneList = new ArrayList<String>(1);
@@ -525,6 +545,20 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 					}else {
 						for(String uid : appliedPolicy.getUidList()){
 							AppliedPolicy clone = appliedPolicy.clone();
+							
+							
+							for(Command co : commands) {
+								List<CommandExecution> commandExecutions = co.getCommandExecutions();
+								for(CommandExecution ce : commandExecutions){
+									if (ce.getUid().equalsIgnoreCase(uid)){
+										if(ce.getCommandExecutionResults() != null && ce.getCommandExecutionResults().size() > 0){
+											clone.setAppliedToUser(true);
+											
+										}
+									}
+								}
+							}
+							
 							List<String> cloneList = new ArrayList<String>(1);
 							cloneList.add(uid);
 							clone.setUidList(cloneList);
@@ -534,6 +568,17 @@ public class DiskQutaPolicyListEditor extends EditorPart {
 					}
 					
 				}else {
+					List<Command> commands = PolicyRestUtils.listCommands(appliedPolicy.getId());
+					for(Command co : commands) {
+						List<CommandExecution> commandExecutions = co.getCommandExecutions();
+						for(CommandExecution ce : commandExecutions){
+							if (ce.getUid().equalsIgnoreCase(appliedPolicy.getUidList().get(0))){
+								if(ce.getCommandExecutionResults() != null && ce.getCommandExecutionResults().size() > 0){
+									appliedPolicy.setAppliedToUser(true);
+								}
+							}
+						}
+					}
 					policiesList.add(appliedPolicy);
 				}
 			}
