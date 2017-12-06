@@ -33,7 +33,7 @@ Disk quota plugin for [Lider Ahenk project](http://www.liderahenk.org.tr).
 
 #### Ahenk
 
-1. Create a soft link for _ahenk-disk-quota/disk-quota_ directory via `sudo ln -s lider-ahenk-disk-quota-plugin/ahenk-disk-quota/disk-quota/ /opt/ahenk/plugins`
+1. Create a soft link for _ahenk-disk-quota/disk-quota_ directory via `sudo ln -s lider-ahenk-disk-quota-plugin/ahenk-disk-quota/disk-quota/ /usr/share/ahenk/plugins`
 
 ## Contribution
 
