@@ -11,7 +11,7 @@ from base.plugin.abstract_plugin import AbstractPlugin
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__))))
 
 from fstab import Fstab
-from api.disk_quota_ltsp import DiskQuota 
+from api.disk_quota import DiskQuota
 
 def handle_policy(profile_data, context):
     dq = DiskQuota(profile_data, context)

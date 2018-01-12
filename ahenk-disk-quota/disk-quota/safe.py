@@ -15,10 +15,11 @@ class Safe(AbstractPlugin):
         super(Safe, self).__init__()
         self.context = context
         self.username = str(context.get_username())
-        self.mount = 'mount -o remount {}'
+        self.mount = 'mount -o remount /home'
+        self.quotacheck = 'quotacheck -cfmvF vfsv0 /home'
         self.quotaon_all = 'quotaon --all'
         self.quotaon_avug = 'quotaon -avug'
-        self.set_quota = 'setquota --always-resolve -u {0} {1} {2} 0 0 --all'
+        self.set_quota = 'setquota -u {0} {1} {2} 0 0 /home'
         self.logger = self.get_logger()
 
     def handle_safe_mode(self):
@@ -27,22 +28,25 @@ class Safe(AbstractPlugin):
 
             try:
                 # Check fstab & append 'usrquota' option if not exists
-                fs = Fstab()
-                fs.read('/etc/fstab')
-                fstab_entries = []
-                fslines = fs.lines
-                for line in fslines:
-                    if line.has_filesystem() and 'usrquota' not in line.options:
-                        if line.dict['directory'] == '/' or line.dict['directory'] == '/home/':
-                            self.logger.debug('Appending \'usrquota\' option to {}'.format(line.dict['directory']))
-                            line.options += ['usrquota']
-                            fstab_entries.append(line.dict['directory'])
-                fs.write('/etc/fstab')
+                #fs = Fstab()
+                #fs.read('/etc/fstab')
+                #fstab_entries = []
+                #fslines = fs.lines
+                #for line in fslines:'
+                #    if line.has_filesystem() and 'usrquota' not in line.options:
+                #        if line.dict['directory'] == '/' or line.dict['directory'] == '/home/':
+                #            self.logger.debug('Appending \'usrquota\' option to {}'.format(line.dict['directory']))
+                #            line.options += ['usrquota']
+                #            fstab_entries.append(line.dict['directory'])
+                #fs.write('/etc/fstab')#
 
                 # Re-mount necessary fstab entries
-                for entry in fstab_entries:
-                    self.execute(self.mount.format(entry))
-                    self.logger.debug('Remounting fstab entry {}'.format(entry))
+                #for entry in fstab_entries:
+                #    self.execute(self.mount.format(entry))
+                #    self.logger.debug('Remounting fstab entry {}'.format(entry))
+
+                self.execute(self.quotacheck)
+                self.logger.debug('{}'.format(self.quotacheck))
 
                 self.execute(self.quotaon_all)
                 self.logger.debug('{}'.format(self.quotaon_all))
@@ -52,9 +56,7 @@ class Safe(AbstractPlugin):
 
                 self.execute(self.set_quota.format(self.username, quota_size, quota_size))
                 self.logger.debug(
-                    'Set soft and hard quota. Username: {0}, Soft Quota: {1}, Hard Quota: {2}'.format(self.username,
-                                                                                                      quota_size,
-                                                                                                      quota_size))
+                    'Set soft and hard quota. Username: {0}, Soft Quota: {1}, Hard Quota: {2}'.format(self.username,quota_size,quota_size))
 
 
             except Exception as e:
