@@ -156,7 +156,7 @@
      <policyItem
            label="%command.profile"
            pluginName="disk-quota"
-           pluginVersion="1.0.0"
+           pluginVersion="1.1"
            profileCommandId="tr.org.liderahenk.liderconsole.commands.DiskQuotaProfile">
      </policyItem>
   </extension>
@@ -167,7 +167,7 @@
      <taskItem
            label="%command.task"
            pluginName="disk-quota"
-           pluginVersion="1.0.0"
+           pluginVersion="1.1"
            taskCommandId="tr.org.liderahenk.liderconsole.commands.DiskQuotaTask" 
            description="Herhangi bir kullanıcıya ait soft kota ve hard kota sınırlarının belirlenmesiyle bir makine üzerindeki bütün kullanıcıların kota durumlarının görülmesini sağlar.&#xA;Mevcut kota durumunu görmek için tıklayınız.."
            imagePath="diskquota.png"> 
