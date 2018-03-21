@@ -34,6 +34,10 @@ Disk quota plugin for [Lider Ahenk project](http://www.liderahenk.org.tr).
 #### Ahenk
 
 1. Create a soft link for _ahenk-disk-quota/disk-quota_ directory via `sudo ln -s lider-ahenk-disk-quota-plugin/ahenk-disk-quota/disk-quota/ /usr/share/ahenk/plugins`
+2. In Ahenk, "usrquota" should be added to the "home" line in the fstab file and the computer must be restarted.
+	Example:
+    
+    	/dev/sda8	/home	ext4	defaults,usrquota	0	2
 
 ## Contribution
 
